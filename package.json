@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "start": "node ./server/app.js",
+    "postinstall": "npm run build",
     "build": "browserify -t babelify client/js/index.js -o statics/main.js",
     "watch": "watchify -t babelify client/js/index.js -o statics/main.js -v",
     "test": "echo \"Error: no test specified\" && exit 1"
