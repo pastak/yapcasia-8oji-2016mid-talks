@@ -24,13 +24,16 @@ class App extends React.Component {
     fetch('/talks')
       .then(parseJson)
       .then(talks => this.setState({talks: this.state.talks.concat(talks)}))
+      .then(() => this.sortTalksBy('-number'))
     fetch('/lts')
       .then(parseJson)
       .then(talks => this.setState({talks: this.state.talks.concat(talks)}))
+      .then(() => this.sortTalksBy('-number'))
   }
 
-  sortTalksBy (params) {
-    this.setState({talks: this.state.talks.sort(sortBy(params, 'number'))})
+  sortTalksBy (...params) {
+    if (params.length === 0) params = ['-number']
+    this.setState({talks: this.state.talks.sort(sortBy(...params))})
   }
 
   toggleLabel (label) {
@@ -54,36 +57,36 @@ class App extends React.Component {
     })
 
     return (<div>
-      Sort by <span className="dropdown">
-        <a className="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          {(() => {
-            switch (this.state.sortSelected) {
-              case 'total_count':
-                return (<span>Total Reactions Count</span>)
-                break
-              case null:
-                return null
-              default:
-                return [<img width='16' src={reaction2image(this.state.sortSelected)} />, this.state.sortSelected]
-            }
-          })()}
-          <span className="caret"></span>
-        </a>
-        <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
-          <li><a onClick={() => {this.sortTalksBy('-reactions.total_count'); this.setState({sortSelected: 'total_count'})}}>Total Reactions Count</a></li>
-          {Object.keys(emojiList).map((reaction) => {
-            return (<li key={reaction}>
-              <a href='#' onClick={() => {this.sortTalksBy(`-reactions.${reaction}`); this.setState({sortSelected: reaction})}}>
-                <img width='16'src={reaction2image(reaction)} />{reaction}
-              </a>
-            </li>)
-          })}
-        </ul>
-      </span>
-
       <div>
-        <button onClick={() => this.toggleLabel('talk')} className={cx('btn', {'btn-default': !this.state.showTalk, 'btn-info': this.state.showTalk})}>トーク応募</button>
+        Talk Type <button onClick={() => this.toggleLabel('talk')} className={cx('btn', {'btn-default': !this.state.showTalk, 'btn-info': this.state.showTalk})}>トーク応募</button>
         <button onClick={() => this.toggleLabel('lt')} className={cx('btn', {'btn-default': !this.state.showLt, 'btn-info': this.state.showLt})}>LT応募</button>
+        <div className="btn-group" style={{float: 'right'}}>
+          <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span>SortBy </span>
+            {(() => {
+              switch (this.state.sortSelected) {
+                case 'total_count':
+                  return (<span>Total Reactions Count</span>)
+                  break
+                case null:
+                  return null
+                default:
+                  return [<img width='16' src={reaction2image(this.state.sortSelected)} />, this.state.sortSelected]
+              }
+            })()}
+            <span className="caret"></span>
+          </button>
+          <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a onClick={() => {this.sortTalksBy('-reactions.total_count'); this.setState({sortSelected: 'total_count'})}}>Total Reactions Count</a></li>
+            {Object.keys(emojiList).map((reaction) => {
+              return (<li key={reaction}>
+                <a href='#' onClick={() => {this.sortTalksBy(`-reactions.${reaction}`); this.setState({sortSelected: reaction})}}>
+                  <img width='16'src={reaction2image(reaction)} />{reaction}
+                </a>
+              </li>)
+            })}
+          </ul>
+        </div>
       </div>
 
       <table className='table talk-list table-striped'>
