@@ -15,14 +15,24 @@ github.authenticate({
   token: process.env.GITHUB_TOKEN
 })
 
-module.exports = function *(next) {
+const getIssues = (l) => function *(next) {
+  var label = 'トーク応募'
+  if (l === 'lt') {
+    label = 'LT応募'
+  }
+  console.log(label)
   this.body = yield new Promise((resolve) => github.issues.getForRepo({
     user: 'hachiojipm',
     repo: 'yapcasia-8oji-2016mid-timetable',
     state: 'open',
     per_page: 100,
-    labels: 'トーク応募'
+    labels: label
   }, (err, res) => {
     resolve(res)
   }))
+}
+
+module.exports = {
+  getTalks: () => getIssues('talk'),
+  getLts: () => getIssues('lt')
 }
