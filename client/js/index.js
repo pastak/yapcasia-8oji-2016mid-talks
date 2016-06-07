@@ -17,6 +17,8 @@ class App extends React.Component {
       sortSelected: null,
       showTalk: true,
       showLt: false,
+      showDay1: true,
+      showDay2: true
     }
   }
 
@@ -41,18 +43,27 @@ class App extends React.Component {
       this.setState({showLt: !this.state.showLt})
     } else if (label === 'talk') {
       this.setState({showTalk: !this.state.showTalk})
+    } else if (label === 'day1') {
+      this.setState({showDay1: !this.state.showDay1})
+    } else if (label === 'day2') {
+      this.setState({showDay2: !this.state.showDay2})
     }
   }
 
-  isLabeled (talk, labelName) {
-    return talk.labels.filter((label) => label.name === labelName).length > 0
+  isLabeled (talk, regExp) {
+    return talk.labels.filter((label) => regExp.test(label.name)).length > 0
   }
 
   render() {
 
     const talks = this.state.talks.filter((talk) => {
-      if (!this.state.showTalk && this.isLabeled(talk, 'トーク応募')) return false
-      if (!this.state.showLt && this.isLabeled(talk, 'LT応募')) return false
+      if (!this.state.showTalk && this.isLabeled(talk, /トーク応募/)) return false
+      if (!this.state.showLt && this.isLabeled(talk, /LT応募/)) return false
+      if (this.state.showDay1 || this.state.showDay2) {
+        if (this.state.showDay1 && this.isLabeled(talk, /7\/2/)) return true
+        if (this.state.showDay2 && this.isLabeled(talk, /7\/3/)) return true
+        return false
+      }
       return true
     })
 
@@ -60,6 +71,9 @@ class App extends React.Component {
       <div>
         Talk Type <button onClick={() => this.toggleLabel('talk')} className={cx('btn', {'btn-default': !this.state.showTalk, 'btn-info': this.state.showTalk})}>トーク応募</button>
         <button onClick={() => this.toggleLabel('lt')} className={cx('btn', {'btn-default': !this.state.showLt, 'btn-info': this.state.showLt})}>LT応募</button>
+        <span style={{marginLeft: 50}}></span>
+        <button onClick={() => this.toggleLabel('day1')} className={cx('btn', {'btn-default': !this.state.showDay1, 'btn-primary': this.state.showDay1})}>1日目</button>
+        <button onClick={() => this.toggleLabel('day2')} className={cx('btn', {'btn-default': !this.state.showDay2, 'btn-success': this.state.showDay2})}>2日目</button>
         <div className="btn-group" style={{float: 'right'}}>
           <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             <span>SortBy </span>
