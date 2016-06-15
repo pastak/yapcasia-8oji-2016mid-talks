@@ -15,7 +15,7 @@ module.exports = class TalkItem extends React.Component {
         })}
       </td>
       <td className='talk-title'>
-        <a href={talk.html_url} target='_blank'>{talk.title}</a>
+        <a href={talk.html_url} target='_blank'><small>#{talk.number}</small> {talk.title}</a>
         <a href={`http://b.hatena.ne.jp/entry/s/github.com/hachiojipm/yapcasia-8oji-2016mid-timetable/issues/${talk.number}`}>
           <img src={`http://b.st-hatena.com/entry/image/https://github.com/hachiojipm/yapcasia-8oji-2016mid-timetable/issues/${talk.number}`} />
         </a>
