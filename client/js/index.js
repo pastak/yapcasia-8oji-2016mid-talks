@@ -15,10 +15,10 @@ class App extends React.Component {
     this.state = {
       talks: [],
       sortSelected: null,
-      showTalk: true,
-      showLt: false,
-      showDay1: true,
-      showDay2: true
+      showTalk: false,
+      showLt: true,
+      showDay1: false,
+      showDay2: false
     }
   }
 
